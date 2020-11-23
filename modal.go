@@ -24,14 +24,14 @@ import (
 
 func generateModalRequest() slack.ModalViewRequest {
 	// Create a ModalViewRequest with a header and two inputs
-	titleText := slack.NewTextBlockObject("plain_text", "My App", false, false)
-	closeText := slack.NewTextBlockObject("plain_text", "Close", false, false)
+	titleText := slack.NewTextBlockObject("plain_text", "Squawk", false, false)
+	closeText := slack.NewTextBlockObject("plain_text", "Cancel", false, false)
 	submitText := slack.NewTextBlockObject("plain_text", "Submit", false, false)
 
-	headerText := slack.NewTextBlockObject("mrkdwn", "Please enter your name", false, false)
+	headerText := slack.NewTextBlockObject("mrkdwn", "Squawk your way to easier deployments", false, false)
 	headerSection := slack.NewSectionBlock(headerText, nil, nil)
 
-	firstNameText := slack.NewTextBlockObject("plain_text", "First Name", false, false)
+	firstNameText := slack.NewTextBlockObject("plain_text", "Target Servers", false, false)
 	firstNamePlaceholder := slack.NewTextBlockObject("plain_text", "Enter your first name", false, false)
 	firstNameElement := slack.NewPlainTextInputBlockElement(firstNamePlaceholder, "firstName")
 	// Notice that blockID is a unique identifier for a block
