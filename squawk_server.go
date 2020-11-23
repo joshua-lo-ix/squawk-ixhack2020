@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+
+	"github.com/slack-go/slack"
 )
 
 var version string
@@ -39,14 +41,14 @@ func versionHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, version)
 }
 func handler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Add(“Content-Type”, “application/json”)
+	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprintf(w, modal)
 }
 
 func fastSlash(w http.ResponseWriter, r *http.Request) {
-    w.Header().Add(“Content-Type”, “application/json”)
+	w.Header().Add("Content-Type", "application/json")
 
-    fmt.Fprintf(w, serverModal)
+	fmt.Fprintf(w, serverModal)
 }
 
 func initial_req_ack() {
