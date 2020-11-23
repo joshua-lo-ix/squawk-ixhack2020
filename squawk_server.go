@@ -4,7 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
+    "net/http"
+    "os/exec"
 )
 
 var version string
