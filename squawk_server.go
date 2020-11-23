@@ -28,6 +28,9 @@ func main() {
 }
 
 func ansibleTest(w http.ResponseWriter, r *http.Request) {
+	initial_req_ack()
+	w.WriteHeader(http.StatusOK)
+
 	refresh_ansible()
 	exec_ansible()
 }
@@ -36,6 +39,11 @@ func versionHandler(w http.ResponseWriter, r *http.Request) {
 }
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, modal)
+}
+
+func initial_req_ack() {
+	msg := "Request received! :+1:"
+	message(msg)
 }
 
 func refresh_ansible() {
@@ -62,4 +70,11 @@ func exec_ansible() {
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func message(msg string) {
+	api := slack.New("xoxb-1318525037713-1546374229952-IVKijTnx5boTgt8PjjvTd7wA")
+	_, _, err := api.PostMessage("C01FCNNDC4B",
+		slack.MsgOptionText(msg, false),
+		slack.MsgOptionAttachments())
 }
