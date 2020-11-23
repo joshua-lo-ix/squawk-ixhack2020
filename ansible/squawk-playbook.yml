@@ -1,3 +1,0 @@
-- hosts: all
-  name: Execute squawk play
-  command: "echo Hello there!"
