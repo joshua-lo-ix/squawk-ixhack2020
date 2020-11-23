@@ -31,10 +31,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func refresh_ansible() {
+    clean_ansible()
+    get_ansible()
+}
+
+func clean_ansible() {
     cmd := exec.Command("rm", "-rf", "squawk-ixhack2020-ansible")
     if err := cmd.Run(); err != nil {
         log.Fatal(err)
     }
+}
+
+func get_ansible() {
     cmd := exec.Command("git", "clone", "https://github.com/joshua-lo-ix/squawk-ixhack2020-ansible.git")
     if err := cmd.Run(); err != nil {
         log.Fatal(err)
