@@ -31,15 +31,19 @@ func main() {
 }
 
 func ansibleTest(w http.ResponseWriter, r *http.Request) {
-	initial_req_ack()
-	w.WriteHeader(http.StatusOK)
+	go func() {
+		initial_req_ack()
+		refresh_ansible()
+		exec_ansible()
+	}()
 
-	refresh_ansible()
-	exec_ansible()
+	w.WriteHeader(http.StatusOK)
 }
+
 func versionHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, version)
 }
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	fmt.Fprintf(w, modal)
@@ -52,8 +56,7 @@ func fastSlash(w http.ResponseWriter, r *http.Request) {
 }
 
 func initial_req_ack() {
-	msg := "Request received! :+1:"
-	message(msg)
+	message("Request received! :+1:")
 }
 
 func refresh_ansible() {
@@ -62,24 +65,29 @@ func refresh_ansible() {
 }
 
 func clean_ansible() {
-	cmd := exec.Command("rm", "-rf", "squawk-ixhack2020-ansible")
-	if err := cmd.Run(); err != nil {
+	out, err := exec.Command("rm", "-rf", "squawk-ixhack2020-ansible").Output()
+	if err != nil {
+		message(fmt.Sprintf("```%s```", string(out)))
 		log.Fatal(err)
 	}
 }
 
 func get_ansible() {
-	cmd := exec.Command("git", "clone", "https://github.com/joshua-lo-ix/squawk-ixhack2020-ansible.git")
-	if err := cmd.Run(); err != nil {
+	out, err := exec.Command("git", "clone", "https://github.com/joshua-lo-ix/squawk-ixhack2020-ansible.git").Output()
+	if err != nil {
+		message(fmt.Sprintf("```%s```", string(out)))
 		log.Fatal(err)
 	}
 }
 
 func exec_ansible() {
-	cmd := exec.Command("ansible-playbook", "-i", "squawk-ixhack2020-ansible/hosts", "squawk-ixhack2020-ansible/squawk-playbook.yml")
-	if err := cmd.Run(); err != nil {
+	out, err := exec.Command("ansible-playbook", "-i", "squawk-ixhack2020-ansible/hosts", "squawk-ixhack2020-ansible/squawk-playbook.yml").Output()
+	if err != nil {
+		message(fmt.Sprintf("```%s```", string(out)))
 		log.Fatal(err)
 	}
+
+	message(fmt.Sprintf("```%s```", string(out)))
 }
 
 func message(msg string) {
