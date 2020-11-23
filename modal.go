@@ -31,22 +31,25 @@ func generateModalRequest() slack.ModalViewRequest {
 	headerText := slack.NewTextBlockObject("mrkdwn", "Squawk your way to easier deployments", false, false)
 	headerSection := slack.NewSectionBlock(headerText, nil, nil)
 
-	firstNameText := slack.NewTextBlockObject("plain_text", "Target Servers", false, false)
-	firstNamePlaceholder := slack.NewTextBlockObject("plain_text", "Enter your first name", false, false)
-	firstNameElement := slack.NewPlainTextInputBlockElement(firstNamePlaceholder, "firstName")
+	targetServersText := slack.NewTextBlockObject("plain_text", "Target Servers", false, false)
+	targetServersPlaceholder := slack.NewTextBlockObject("plain_text", "Select your target servers", false, false)
+	// TODO?
+	targetServersElement := slack.NewPlainTextInputBlockElement(targetServersPlaceholder, "targetServers")
 	// Notice that blockID is a unique identifier for a block
-	firstName := slack.NewInputBlock("First Name", firstNameText, firstNameElement)
+	targetServers := slack.NewInputBlock("Target Servers", targetServersText, targetServersElement)
 
-	lastNameText := slack.NewTextBlockObject("plain_text", "Last Name", false, false)
-	lastNamePlaceholder := slack.NewTextBlockObject("plain_text", "Enter your first name", false, false)
-	lastNameElement := slack.NewPlainTextInputBlockElement(lastNamePlaceholder, "lastName")
-	lastName := slack.NewInputBlock("Last Name", lastNameText, lastNameElement)
+	ixConfsText := slack.NewTextBlockObject("plain_text", "IX Confs", false, false)
+	ixConfsPlaceholder := slack.NewTextBlockObject("plain_text", "Enter your ix confs updates", false, false)
+
+	// TODO?
+	ixConfsElement := slack.NewPlainTextInputBlockElement(ixConfsPlaceholder, "ixConfs")
+	ixConfs := slack.NewInputBlock("IX Confs", ixConfsText, ixConfsElement)
 
 	blocks := slack.Blocks{
 		BlockSet: []slack.Block{
 			headerSection,
-			firstName,
-			lastName,
+			targetServers,
+			ixConfs,
 		},
 	}
 

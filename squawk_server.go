@@ -22,8 +22,8 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/version", versionHandler)
 	http.HandleFunc("/ansibletest", ansibleTest)
-	//http.HandleFunc("/slash", handleSlash)
-	http.HandleFunc("/slash", fastSlash)
+	http.HandleFunc("/slash", handleSlash)
+	//http.HandleFunc("/slash", fastSlash)
 	http.HandleFunc("/modal", handleModal)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
@@ -36,6 +36,7 @@ func versionHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, version)
 }
 func handler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Add(“Content-Type”, “application/json”)
 	fmt.Fprintf(w, modal)
 }
 
