@@ -29,6 +29,9 @@ func main() {
 }
 
 func ansibleTest(w http.ResponseWriter, r *http.Request) {
+	initial_req_ack()
+	w.WriteHeader(http.StatusOK)
+
 	refresh_ansible()
 	exec_ansible()
 }
@@ -41,7 +44,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fastSlash(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, serverModal)
+    w.Header().Add(“Content-Type”, “application/json”)
+
+    fmt.Fprintf(w, serverModal)
+}
+
+func initial_req_ack() {
+	msg := "Request received! :+1:"
+	message(msg)
 }
 
 func refresh_ansible() {
@@ -68,4 +78,11 @@ func exec_ansible() {
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func message(msg string) {
+	api := slack.New(slacktoken)
+	_, _, err := api.PostMessage("C01FCNNDC4B",
+		slack.MsgOptionText(msg, false),
+		slack.MsgOptionAttachments())
 }
