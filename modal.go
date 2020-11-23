@@ -31,25 +31,21 @@ func generateModalRequest() slack.ModalViewRequest {
 	headerText := slack.NewTextBlockObject("mrkdwn", "Squawk your way to easier deployments", false, false)
 	headerSection := slack.NewSectionBlock(headerText, nil, nil)
 
-	targetServersText := slack.NewTextBlockObject("plain_text", "Target Servers", false, false)
-	targetServersPlaceholder := slack.NewTextBlockObject("plain_text", "Select your target servers", false, false)
-	// TODO?
-	targetServersElement := slack.NewPlainTextInputBlockElement(targetServersPlaceholder, "targetServers")
-	// Notice that blockID is a unique identifier for a block
-	targetServers := slack.NewInputBlock("Target Servers", targetServersText, targetServersElement)
+	memberOptions := createOptionBlockObjects([]string{"all", "hk", "a800"}, false)
+	targetServersText := slack.NewTextBlockObject(slack.PlainTextType, "Target Server List", false, false)
+	targetServersOption := slack.NewOptionsSelectBlockElement(slack.OptTypeStatic, nil, "targetServers", memberOptions...)
+	targetServersBlock := slack.NewInputBlock("targetServers", targetServersText, targetServersOption)
 
-	ixConfsText := slack.NewTextBlockObject("plain_text", "IX Confs", false, false)
-	ixConfsPlaceholder := slack.NewTextBlockObject("plain_text", "Enter your ix confs updates", false, false)
-
-	// TODO?
-	ixConfsElement := slack.NewPlainTextInputBlockElement(ixConfsPlaceholder, "ixConfs")
-	ixConfs := slack.NewInputBlock("IX Confs", ixConfsText, ixConfsElement)
+	memberOptions = createOptionBlockObjects([]string{"all", "ib", "asc"}, false)
+	ixConfsText := slack.NewTextBlockObject(slack.PlainTextType, "Ix Confs List", false, false)
+	ixConfsOption := slack.NewOptionsSelectBlockElement(slack.OptTypeStatic, nil, "ixConfs", memberOptions...)
+	ixConfsBlock := slack.NewInputBlock("ixConfs", ixConfsText, ixConfsOption)
 
 	blocks := slack.Blocks{
 		BlockSet: []slack.Block{
 			headerSection,
-			targetServers,
-			ixConfs,
+			targetServersBlock,
+			ixConfsBlock,
 		},
 	}
 
@@ -166,4 +162,19 @@ func handleModal(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+}
+
+func createOptionBlockObjects(options []string, users bool) []*slack.OptionBlockObject {
+	optionBlockObjects := make([]*slack.OptionBlockObject, 0, len(options))
+	var text string
+	for _, o := range options {
+		if users {
+			text = fmt.Sprintf("<@%s>", o)
+		} else {
+			text = o
+		}
+		optionText := slack.NewTextBlockObject(slack.PlainTextType, text, false, false)
+		optionBlockObjects = append(optionBlockObjects, slack.NewOptionBlockObject(o, optionText, nil))
+	}
+	return optionBlockObjects
 }
