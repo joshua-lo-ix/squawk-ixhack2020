@@ -18,6 +18,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/slack-go/slack"
 )
 
@@ -73,6 +74,9 @@ func verifySigningSecret(r *http.Request) error {
 		fmt.Println(err.Error())
 		return err
 	}
+
+	fmt.Printf("Received body: %s\n", body)
+
 	// Need to use r.Body again when unmarshalling SlashCommand and InteractionCallback
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
@@ -101,18 +105,28 @@ func handleSlash(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	switch s.Command {
-	case "/humboldttest":
-		api := slack.New(slacktoken)
-		modalRequest := generateModalRequest()
-		_, err = api.OpenView(s.TriggerID, modalRequest)
-		if err != nil {
-			fmt.Printf("Error opening view: %s", err)
-		}
-	default:
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	api := slack.New(slacktoken)
+	modalRequest := generateModalRequest()
+	_, err = api.OpenView(s.TriggerID, modalRequest)
+	if err != nil {
+		fmt.Printf("Error opening view: %s", err)
 	}
+
+	/*
+	   // Not leaving options in, only onoe responsee
+	   	switch s.Text {
+	   	case "humboldttest":
+	   		api := slack.New(slacktoken)
+	   		modalRequest := generateModalRequest()
+	   		_, err = api.OpenView(s.TriggerID, modalRequest)
+	   		if err != nil {
+	   			fmt.Printf("Error opening view: %s", err)
+	   		}
+	   	default:
+	   		w.WriteHeader(http.StatusInternalServerError)
+	   		return
+	   	}
+	*/
 }
 
 func handleModal(w http.ResponseWriter, r *http.Request) {
@@ -137,6 +151,8 @@ func handleModal(w http.ResponseWriter, r *http.Request) {
 	lastName := i.View.State.Values["Last Name"]["lastName"].Value
 
 	msg := fmt.Sprintf("Hello %s %s, nice to meet you!", firstName, lastName)
+
+	spew.Dump(i)
 
 	api := slack.New(slacktoken)
 	_, _, err = api.PostMessage(i.User.ID,
