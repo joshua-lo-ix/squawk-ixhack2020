@@ -1,14 +1,17 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
 
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/slack-go/slack"
 	"github.com/google/uuid"
 )
@@ -16,7 +19,11 @@ import (
 var version string
 var signingsecret string
 var slacktoken string
+<<<<<<< Updated upstream
 var jobUuid uuid.UUID
+=======
+var database *sql.DB
+>>>>>>> Stashed changes
 
 func main() {
 
@@ -25,6 +32,26 @@ func main() {
 	flag.StringVar(&slacktoken, "slacktoken", "0", "slack tokent for slack")
 
 	flag.Parse()
+
+	os.Remove("./localsqllite.db")
+	database, err := sql.Open("sqlite3", "./localsqllite.db")
+	if err != nil {
+		log.Printf("%q: \n", err)
+		os.Exit(1)
+	}
+	statement, err := database.Prepare("CREATE TABLE IF NOT EXISTS jobs (id INTEGER PRIMARY KEY, targetservers TEXT, ixconfs TEXT, results TEXT)")
+	if err != nil {
+		log.Printf("%q: %s\n", err, statement)
+		os.Exit(1)
+	}
+
+	_, err = statement.Exec()
+	if err != nil {
+		log.Printf("%q: %s\n", err, statement)
+		os.Exit(1)
+	}
+	exec_ansible("foo", "bar")
+
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/version", versionHandler)
 	http.HandleFunc("/ansibletest", ansibleTest)
@@ -32,6 +59,9 @@ func main() {
 	http.HandleFunc("/squawk", handleSlash)
 	//http.HandleFunc("/slash", fastSlash)
 	http.HandleFunc("/modal", ansibleTest)
+
+	http.HandleFunc("/jobs", handleJobs)
+
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 
@@ -111,6 +141,15 @@ func exec_ansible(targetServers string, ixConfs string) {
 		return
 	}
 
+	database, _ := sql.Open("sqlite3", "./localsqllite.db")
+	//spew.Dump(database)
+
+	tx, _ := database.Begin()
+	statement, _ := tx.Prepare("INSERT INTO jobs (targetservers, ixconfs, results) VALUES (?, ?, ?)")
+	defer statement.Close()
+	statement.Exec(targetServers, ixConfs, string(out))
+	tx.Commit()
+
 	outString := string(out)
 	outSplit := regexp.MustCompile("PLAY RECAP \\*+").Split(outString, -1)
 	if len(outSplit) < 2 {
@@ -122,6 +161,7 @@ func exec_ansible(targetServers string, ixConfs string) {
 }
 
 func message(msg string) {
+
 	api := slack.New(slacktoken)
 	_, _, _ = api.PostMessage("C01FCNNDC4B",
 		slack.MsgOptionText(msg, false),
