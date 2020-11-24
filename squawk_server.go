@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("/version", versionHandler)
 	http.HandleFunc("/ansibletest", ansibleTest)
 	http.HandleFunc("/slash", handleSlash)
+	http.HandleFunc("/squawk", handleSlash)
 	//http.HandleFunc("/slash", fastSlash)
 	http.HandleFunc("/modal", handleModal)
 	log.Fatal(http.ListenAndServe(":8081", nil))
