@@ -104,12 +104,13 @@ func exec_ansible(targetServers string, ixConfs string) {
 
 	if err != nil {
 		message(fmt.Sprintf("Error running command: %v", err))
-		log.Fatal(err)
+		message(fmt.Sprintf("```%s```", string(out)))
+		return
 	}
 
 	outString := string(out)
 	outString = regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)[1]
-	message(fmt.Sprintf("```%s```", string(outString)))
+	message(fmt.Sprintf("```%s```", outString))
 }
 
 func message(msg string) {
