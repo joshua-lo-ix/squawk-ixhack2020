@@ -99,7 +99,7 @@ func exec_ansible() {
 
 func message(msg string) {
 	api := slack.New(slacktoken)
-	_, _, err := api.PostMessage("C01FCNNDC4B",
+	_, _, _ = api.PostMessage("C01FCNNDC4B",
 		slack.MsgOptionText(msg, false),
 		slack.MsgOptionAttachments())
 }

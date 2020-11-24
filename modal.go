@@ -18,7 +18,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/slack-go/slack"
 )
 
@@ -128,13 +127,13 @@ func handleSlash(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
-func handleModal(w http.ResponseWriter, r *http.Request) string, string {
+func handleModal(w http.ResponseWriter, r *http.Request) (string, string) {
 
 	err := verifySigningSecret(r)
 	if err != nil {
 		fmt.Printf(err.Error())
 		w.WriteHeader(http.StatusUnauthorized)
-		return
+		return "", ""
 	}
 
 	var i slack.InteractionCallback
@@ -142,13 +141,12 @@ func handleModal(w http.ResponseWriter, r *http.Request) string, string {
 	if err != nil {
 		fmt.Printf(err.Error())
 		w.WriteHeader(http.StatusUnauthorized)
-		return
+		return "", ""
 	}
 
 	// Note there might be a better way to get this info, but I figured this structure out from looking at the json response
 	targetServers := i.View.State.Values["targetServers"]["targetServers"].SelectedOption.Value
 	ixConfs := i.View.State.Values["ixConfs"]["ixConfs"].SelectedOption.Value
-
 
 	return targetServers, ixConfs
 	//msg := fmt.Sprintf("Hello %s %s, nice to meet you!", firstName, lastName)
