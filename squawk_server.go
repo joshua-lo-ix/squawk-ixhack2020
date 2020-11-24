@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"regexp"
 	"net/http"
 	"os/exec"
 
@@ -89,12 +90,13 @@ func get_ansible() {
 
 func exec_ansible() {
 	out, err := exec.Command("ansible-playbook", "-i", "squawk-ixhack2020-ansible/hosts", "squawk-ixhack2020-ansible/squawk-playbook.yml").Output()
+	outString := string(out)
+	outString = regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)[1]
+
+	message(fmt.Sprintf("```%s```", string(outString)))
 	if err != nil {
-		message(fmt.Sprintf("```%s```", string(out)))
 		log.Fatal(err)
 	}
-
-	message(fmt.Sprintf("```%s```", string(out)))
 }
 
 func message(msg string) {
