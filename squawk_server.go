@@ -47,7 +47,6 @@ func main() {
 		log.Printf("%q: %s\n", err, statement)
 		os.Exit(1)
 	}
-	exec_ansible("foo", "bar")
 
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/version", versionHandler)
