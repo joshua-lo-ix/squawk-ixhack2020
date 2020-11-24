@@ -11,19 +11,16 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/slack-go/slack"
-	"github.com/google/uuid"
 )
 
 var version string
 var signingsecret string
 var slacktoken string
-<<<<<<< Updated upstream
 var jobUuid uuid.UUID
-=======
 var database *sql.DB
->>>>>>> Stashed changes
 
 func main() {
 
