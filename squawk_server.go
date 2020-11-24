@@ -65,7 +65,7 @@ func fastSlash(w http.ResponseWriter, r *http.Request) {
 }
 
 func initial_req_ack() {
-	message(fmt.Sprintf("Job ID: `%v`  |  Request received! :bird:", jobUuid))
+	message(fmt.Sprintf("Job ID: `%v`  |  :bird: Request received!", jobUuid))
 }
 
 func refresh_ansible() {
