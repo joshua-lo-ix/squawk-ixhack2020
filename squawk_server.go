@@ -62,7 +62,7 @@ func fastSlash(w http.ResponseWriter, r *http.Request) {
 }
 
 func initial_req_ack() {
-	message("Request received! :+1:")
+	message("Request received! :bird:")
 }
 
 func refresh_ansible() {
@@ -99,11 +99,11 @@ func exec_ansible(targetServers string, ixConfs string) {
 
 	args = append(args, "squawk-ixhack2020-ansible/squawk-playbook.yml")
 
-	message(fmt.Sprintf("```Running command: ansible-playbook %s```", strings.Join(args, " ")))
+	message(fmt.Sprintf("```:airplane_departure: Running command: ansible-playbook %s```", strings.Join(args, " ")))
 	out, err := exec.Command("ansible-playbook", args...).Output()
 
 	if err != nil {
-		message(fmt.Sprintf("Error running command: %v", err))
+		message(fmt.Sprintf(":octagonal_sign: Error running command: %v", err))
 		message(fmt.Sprintf("```%s```", string(out)))
 		return
 	}
@@ -111,11 +111,11 @@ func exec_ansible(targetServers string, ixConfs string) {
 	outString := string(out)
 	outSplit := regexp.MustCompile("PLAY RECAP \\*+").Split(outString, -1)
 	if len(outSplit) < 2 {
-		message(fmt.Sprintf("```Error parsing PLAY RECAP: %s```", outString))
+		message(fmt.Sprintf("```:rotating_light: Error parsing PLAY RECAP: %s```", outString))
 		return
 	}
 
-	message(fmt.Sprintf("```%s```", outSplit[1]))
+	message(fmt.Sprintf("```:airplane_arriving: %s```", outSplit[1]))
 }
 
 func message(msg string) {
