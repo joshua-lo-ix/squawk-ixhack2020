@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os/exec"
 	"regexp"
+	"strings"
 
 	"github.com/slack-go/slack"
 )
@@ -96,14 +97,17 @@ func exec_ansible(targetServers string, ixConfs string) {
 		args = append(args, "--extra-vars", fmt.Sprintf(`ix_confs_selective_files=["%s"]`, ixConfs))
 	}
 
+	message(fmt.Sprintf("```Running command: ansible-playbook %s```", strings.Join(args, " ")))
 	out, err := exec.Command("ansible-playbook", args...).Output()
-	outString := string(out)
-	outString = regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)[1]
 
-	message(fmt.Sprintf("```%s```", string(outString)))
 	if err != nil {
+		message(fmt.Sprintf("Error running command: %v", err))
 		log.Fatal(err)
 	}
+
+	outString := string(out)
+	outString = regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)[1]
+	message(fmt.Sprintf("```%s```", string(outString)))
 }
 
 func message(msg string) {
