@@ -10,11 +10,13 @@ import (
 	"strings"
 
 	"github.com/slack-go/slack"
+	"github.com/google/uuid"
 )
 
 var version string
 var signingsecret string
 var slacktoken string
+var jobUuid uuid.UUID
 
 func main() {
 
@@ -38,6 +40,7 @@ func ansibleTest(w http.ResponseWriter, r *http.Request) {
 	targetServers, ixConfs := handleModal(w, r)
 
 	go func() {
+		jobUuid = uuid.New()
 		initial_req_ack()
 		refresh_ansible()
 		exec_ansible(targetServers, ixConfs)
@@ -62,7 +65,7 @@ func fastSlash(w http.ResponseWriter, r *http.Request) {
 }
 
 func initial_req_ack() {
-	message("Request received! :bird:")
+	message(fmt.Sprintf("Request received! :bird: Your job ID: %v", jobUuid))
 }
 
 func refresh_ansible() {
