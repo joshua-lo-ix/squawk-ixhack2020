@@ -103,19 +103,19 @@ func exec_ansible(targetServers string, ixConfs string) {
 	out, err := exec.Command("ansible-playbook", args...).Output()
 
 	if err != nil {
-		message(fmt.Sprintf(":octagonal_sign: Error running command: %v", err))
-		message(fmt.Sprintf("```%s```", string(out)))
+		message(fmt.Sprintf(":octagonal_sign: Error running command: ```%v```", err))
+		message(fmt.Sprintf(":mag: Playbook output: ```%s```", string(out)))
 		return
 	}
 
 	outString := string(out)
 	outSplit := regexp.MustCompile("PLAY RECAP \\*+").Split(outString, -1)
 	if len(outSplit) < 2 {
-		message(fmt.Sprintf("```:rotating_light: Error parsing PLAY RECAP: %s```", outString))
+		message(fmt.Sprintf(":rotating_light: Error parsing PLAY RECAP: ``` %s```", outString))
 		return
 	}
 
-	message(fmt.Sprintf("```:airplane_arriving: %s```", outSplit[1]))
+	message(fmt.Sprintf(":airplane_arriving: Successfully completed! ```%s```", outSplit[1]))
 }
 
 func message(msg string) {
