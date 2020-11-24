@@ -4,11 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"regexp"
 	"net/http"
 	"os/exec"
+	"regexp"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/slack-go/slack"
 )
 
@@ -36,13 +35,11 @@ func main() {
 func ansibleTest(w http.ResponseWriter, r *http.Request) {
 
 	targetServers, ixConfs := handleModal(w, r)
-	spew.Dump(targetServers)
-	spew.Dump(ixConfs)
 
 	go func() {
 		initial_req_ack()
 		refresh_ansible()
-		exec_ansible()
+		exec_ansible(targetServers, ixConfs)
 	}()
 
 	w.WriteHeader(http.StatusOK)
@@ -88,8 +85,8 @@ func get_ansible() {
 	}
 }
 
-func exec_ansible() {
-	out, err := exec.Command("ansible-playbook", "-i", "squawk-ixhack2020-ansible/hosts", "squawk-ixhack2020-ansible/squawk-playbook.yml").Output()
+func exec_ansible(targetServers string, ixConfs string) {
+	out, err := exec.Command("ansible-playbook", "-i", "squawk-ixhack2020-ansible/hosts", "--limit", targetServers, "--extra-vars", fmt.Sprintf("ix-confs=%s", ixConfs), "squawk-ixhack2020-ansible/squawk-playbook.yml").Output()
 	outString := string(out)
 	outString = regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)[1]
 
