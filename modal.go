@@ -128,7 +128,7 @@ func handleSlash(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
-func handleModal(w http.ResponseWriter, r *http.Request) {
+func handleModal(w http.ResponseWriter, r *http.Request) string, string {
 
 	err := verifySigningSecret(r)
 	if err != nil {
@@ -145,22 +145,24 @@ func handleModal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	spew.Dump(i.View.state)
 	// Note there might be a better way to get this info, but I figured this structure out from looking at the json response
-	firstName := i.View.State.Values["First Name"]["firstName"].Value
-	lastName := i.View.State.Values["Last Name"]["lastName"].Value
+	targetServers := i.View.State.Values["targetServers"]["targetServers"].SelectedOption.Value
+	ixConfs := i.View.State.Values["ixConfs"]["ixConfs"].SelectedOption.Value
 
-	msg := fmt.Sprintf("Hello %s %s, nice to meet you!", firstName, lastName)
 
-	api := slack.New(slacktoken)
-	_, _, err = api.PostMessage(i.User.ID,
-		slack.MsgOptionText(msg, false),
-		slack.MsgOptionAttachments())
-	if err != nil {
-		fmt.Printf(err.Error())
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	return targetServers, ixConfs
+	//msg := fmt.Sprintf("Hello %s %s, nice to meet you!", firstName, lastName)
+	/*
+		api := slack.New(slacktoken)
+		_, _, err = api.PostMessage(i.User.ID,
+			slack.MsgOptionText(msg, false),
+			slack.MsgOptionAttachments())
+		if err != nil {
+			fmt.Printf(err.Error())
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+	*/
 }
 
 func createOptionBlockObjects(options []string, users bool) []*slack.OptionBlockObject {

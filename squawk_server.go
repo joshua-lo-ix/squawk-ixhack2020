@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os/exec"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/slack-go/slack"
 )
 
@@ -27,11 +28,16 @@ func main() {
 	http.HandleFunc("/slash", handleSlash)
 	http.HandleFunc("/squawk", handleSlash)
 	//http.HandleFunc("/slash", fastSlash)
-	http.HandleFunc("/modal", handleModal)
+	http.HandleFunc("/modal", ansibleTest)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 
 func ansibleTest(w http.ResponseWriter, r *http.Request) {
+
+	targetServers, ixConfs := handleModal(w, r)
+	spew.Dump(targetServers)
+	spew.Dump(ixConfs)
+
 	go func() {
 		initial_req_ack()
 		refresh_ansible()
