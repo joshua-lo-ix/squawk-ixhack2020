@@ -109,8 +109,13 @@ func exec_ansible(targetServers string, ixConfs string) {
 	}
 
 	outString := string(out)
-	outString = regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)[1]
-	message(fmt.Sprintf("```%s```", outString))
+	outSplit := regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)
+	if len(outSplit) < 2 {
+		message(fmt.Sprintf("```Error parsing PLAY RECAP: %s```", outString))
+		return
+	}
+
+	message(fmt.Sprintf("```%s```", outSplit[1]))
 }
 
 func message(msg string) {
