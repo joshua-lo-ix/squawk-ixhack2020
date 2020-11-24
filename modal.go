@@ -30,12 +30,12 @@ func generateModalRequest(channelId string) slack.ModalViewRequest {
 	headerText := slack.NewTextBlockObject("mrkdwn", "Squawk your way to easier deployments", false, false)
 	headerSection := slack.NewSectionBlock(headerText, nil, nil)
 
-	memberOptions := createOptionBlockObjects([]string{"all", "hk", "a800"}, false)
+	memberOptions := createOptionBlockObjects([]string{"all", "staging", "hk", "production"}, false)
 	targetServersText := slack.NewTextBlockObject(slack.PlainTextType, "Target Server List", false, false)
 	targetServersOption := slack.NewOptionsSelectBlockElement(slack.OptTypeStatic, nil, "targetServers", memberOptions...)
 	targetServersBlock := slack.NewInputBlock("targetServers", targetServersText, targetServersOption)
 
-	memberOptions = createOptionBlockObjects([]string{"all", "ib", "asc"}, false)
+	memberOptions = createOptionBlockObjects([]string{"all", "ib.conf", "asc.conf"}, false)
 	ixConfsText := slack.NewTextBlockObject(slack.PlainTextType, "Ix Confs List", false, false)
 	ixConfsOption := slack.NewOptionsSelectBlockElement(slack.OptTypeStatic, nil, "ixConfs", memberOptions...)
 	ixConfsBlock := slack.NewInputBlock("ixConfs", ixConfsText, ixConfsOption)

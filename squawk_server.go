@@ -86,7 +86,17 @@ func get_ansible() {
 }
 
 func exec_ansible(targetServers string, ixConfs string) {
-	out, err := exec.Command("ansible-playbook", "-i", "squawk-ixhack2020-ansible/hosts", "--limit", targetServers, "--extra-vars", fmt.Sprintf("ix-confs=%s", ixConfs), "squawk-ixhack2020-ansible/squawk-playbook.yml").Output()
+	args := []string{"-i", "squawk-ixhack2020-ansible/hosts"}
+
+	if targetServers != "all" {
+		args = append(args, "--limit", targetServers)
+	}
+
+	if ixConfs != "all" {
+		args = append(args, "--extra-vars", fmt.Sprintf(`ix_confs_selective_files=["%s"]`, ixConfs))
+	}
+
+	out, err := exec.Command("ansible-playbook", args...).Output()
 	outString := string(out)
 	outString = regexp.MustCompile("PLAY RECAP \\*+$").Split(outString, -1)[1]
 
