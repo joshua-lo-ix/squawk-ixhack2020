@@ -99,7 +99,7 @@ func exec_ansible(targetServers string, ixConfs string) {
 
 	args = append(args, "squawk-ixhack2020-ansible/squawk-playbook.yml")
 
-	message(fmt.Sprintf("```:airplane_departure: Running command: ansible-playbook %s```", strings.Join(args, " ")))
+	message(fmt.Sprintf(":airplane_departure: Running command: ```ansible-playbook %s```", strings.Join(args, " ")))
 	out, err := exec.Command("ansible-playbook", args...).Output()
 
 	if err != nil {
