@@ -22,7 +22,7 @@ import (
 	"github.com/slack-go/slack"
 )
 
-func generateModalRequest() slack.ModalViewRequest {
+func generateModalRequest(channelId string) slack.ModalViewRequest {
 	// Create a ModalViewRequest with a header and two inputs
 	titleText := slack.NewTextBlockObject("plain_text", "Squawk", false, false)
 	closeText := slack.NewTextBlockObject("plain_text", "Cancel", false, false)
@@ -105,7 +105,7 @@ func handleSlash(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api := slack.New(slacktoken)
-	modalRequest := generateModalRequest()
+	modalRequest := generateModalRequest(s.ChannelID)
 	_, err = api.OpenView(s.TriggerID, modalRequest)
 	if err != nil {
 		fmt.Printf("Error opening view: %s", err)
@@ -145,13 +145,12 @@ func handleModal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	spew.Dump(i.View.state)
 	// Note there might be a better way to get this info, but I figured this structure out from looking at the json response
 	firstName := i.View.State.Values["First Name"]["firstName"].Value
 	lastName := i.View.State.Values["Last Name"]["lastName"].Value
 
 	msg := fmt.Sprintf("Hello %s %s, nice to meet you!", firstName, lastName)
-
-	spew.Dump(i)
 
 	api := slack.New(slacktoken)
 	_, _, err = api.PostMessage(i.User.ID,
