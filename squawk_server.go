@@ -97,6 +97,8 @@ func exec_ansible(targetServers string, ixConfs string) {
 		args = append(args, "--extra-vars", fmt.Sprintf(`ix_confs_selective_files=["%s"]`, ixConfs))
 	}
 
+	args = append(args, "squawk-ixhack2020-ansible/squawk-playbook.yml")
+
 	message(fmt.Sprintf("```Running command: ansible-playbook %s```", strings.Join(args, " ")))
 	out, err := exec.Command("ansible-playbook", args...).Output()
 
