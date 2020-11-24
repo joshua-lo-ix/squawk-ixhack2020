@@ -104,10 +104,20 @@ func handleSlash(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api := slack.New(slacktoken)
-	modalRequest := generateModalRequest(s.ChannelID)
-	_, err = api.OpenView(s.TriggerID, modalRequest)
-	if err != nil {
-		fmt.Printf("Error opening view: %s", err)
+
+	if s.UserName == "joshua.gross" || s.UserName == "adam.wong" || s.UserName == "joshua.lo" || s.UserName == "michael.tardibuono" || s.UserName == "ryan.pietrow" {
+		modalRequest := generateModalRequest(s.ChannelID)
+		_, err = api.OpenView(s.TriggerID, modalRequest)
+		if err != nil {
+			fmt.Printf("Error opening view: %s", err)
+		}
+	} else {
+		msg := fmt.Sprintf("User Not authorized!!!")
+
+		_, _, err = api.PostMessage(s.ChannelID,
+			slack.MsgOptionText(msg, false),
+			slack.MsgOptionAttachments())
+
 	}
 
 	/*
