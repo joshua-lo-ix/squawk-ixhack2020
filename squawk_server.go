@@ -65,7 +65,7 @@ func fastSlash(w http.ResponseWriter, r *http.Request) {
 }
 
 func initial_req_ack() {
-	message(fmt.Sprintf("Request received! :bird: ::    Job ID: `%v`", jobUuid))
+	message(fmt.Sprintf("Job ID: `%v`  |  Request received! :bird:", jobUuid))
 }
 
 func refresh_ansible() {
@@ -76,7 +76,7 @@ func refresh_ansible() {
 func clean_ansible() {
 	out, err := exec.Command("rm", "-rf", "squawk-ixhack2020-ansible").Output()
 	if err != nil {
-		message(fmt.Sprintf("Failed to clean Ansible material ::    Job ID: `%v` ```%s```", jobUuid, string(out)))
+		message(fmt.Sprintf("Job ID: `%v`  |  Failed to clean Ansible material ```%s```", jobUuid, string(out)))
 		log.Fatal(err)
 	}
 }
@@ -84,7 +84,7 @@ func clean_ansible() {
 func get_ansible() {
 	out, err := exec.Command("git", "clone", "https://github.com/joshua-lo-ix/squawk-ixhack2020-ansible.git").Output()
 	if err != nil {
-		message(fmt.Sprintf("Failed to clone Ansible material ::    Job ID: `%v` ```%s```", jobUuid, string(out)))
+		message(fmt.Sprintf("Job ID: `%v`  |  Failed to clone Ansible material ```%s```", jobUuid, string(out)))
 		log.Fatal(err)
 	}
 }
@@ -102,11 +102,11 @@ func exec_ansible(targetServers string, ixConfs string) {
 
 	args = append(args, "squawk-ixhack2020-ansible/squawk-playbook.yml")
 
-	message(fmt.Sprintf(":airplane_departure: Running command: ```ansible-playbook %s``` ::    Job ID: `%v`", strings.Join(args, " "), jobUuid))
+	message(fmt.Sprintf("Job ID: `%v`  |  :airplane_departure: Running command: ```ansible-playbook %s```", jobUuid, strings.Join(args, " ")))
 	out, err := exec.Command("ansible-playbook", args...).Output()
 
 	if err != nil {
-		message(fmt.Sprintf(":octagonal_sign: Error running command: ```%v``` ::    Job ID: `%v`", err, jobUuid))
+		message(fmt.Sprintf("Job ID: `%v`  |  :octagonal_sign: Error running command: ```%v```", jobUuid, err))
 		message(fmt.Sprintf(":mag: Playbook output: ```%s```", string(out)))
 		return
 	}
@@ -114,11 +114,11 @@ func exec_ansible(targetServers string, ixConfs string) {
 	outString := string(out)
 	outSplit := regexp.MustCompile("PLAY RECAP \\*+").Split(outString, -1)
 	if len(outSplit) < 2 {
-		message(fmt.Sprintf(":rotating_light: Error parsing PLAY RECAP: ``` %s``` ::    Job ID: `%v`", outString, jobUuid))
+		message(fmt.Sprintf("Job ID: `%v`  |  :rotating_light: Error parsing PLAY RECAP: ``` %s```", jobUuid, outString))
 		return
 	}
 
-	message(fmt.Sprintf(":airplane_arriving: Successfully completed! ::    Job ID: `%v` ```%s```", jobUuid, outSplit[1]))
+	message(fmt.Sprintf("Job ID: `%v`  |  :airplane_arriving: Successfully completed! ```%s```", jobUuid, outSplit[1]))
 }
 
 func message(msg string) {
