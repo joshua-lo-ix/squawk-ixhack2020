@@ -26,6 +26,7 @@ func generateModalRequest(channelId string) slack.ModalViewRequest {
 	titleText := slack.NewTextBlockObject("plain_text", "Squawk", false, false)
 	closeText := slack.NewTextBlockObject("plain_text", "Cancel", false, false)
 	submitText := slack.NewTextBlockObject("plain_text", "Submit", false, false)
+	metadataText := "test"
 
 	headerText := slack.NewTextBlockObject("mrkdwn", "Squawk your way to easier deployments", false, false)
 	headerSection := slack.NewSectionBlock(headerText, nil, nil)
@@ -51,6 +52,7 @@ func generateModalRequest(channelId string) slack.ModalViewRequest {
 	var modalRequest slack.ModalViewRequest
 	modalRequest.Type = slack.ViewType("modal")
 	modalRequest.Title = titleText
+	modalRequest.PrivateMetadata = metadataText
 	modalRequest.Close = closeText
 	modalRequest.Submit = submitText
 	modalRequest.Blocks = blocks
